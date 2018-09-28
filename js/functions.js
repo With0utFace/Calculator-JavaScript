@@ -5,7 +5,6 @@ function clearFunc() {
     calculator.operator = null;
     updateDisplay();
 }
-
 function numBtnFunc (number) {
     number.addEventListener('click', function (e) {
         calculator.current += e.target.value;
@@ -13,49 +12,22 @@ function numBtnFunc (number) {
         updateDisplay();
     });
 }
-
 function updateDisplay() {
     result.value = calculator.displayValue;
 }
-
 function operatorFunc(op) {
     op.addEventListener('click', function (e) {
         if( e.target.classList.contains('operator')) {
             calculator.operator = e.target.value;
-            calculator.operatorClicked = true;
             calculator.previous = calculator.current;
             setPrevious();
-            console.log(calculator);
+            console.log(calculator.operator);
         }
     });
 }
-
 function setPrevious() {
-    if(calculator.operatorClicked) {
         calculator.current = '';
-        calculator.operatorClicked = false;
-    }
 }
-
-function equalFunc() {
-    if(calculator.operator === '+') {
-        calculator.displayValue = parseFloat(calculator.previous) + parseFloat(calculator.current);
-        updateDisplay();
-    } else if(calculator.operator === '-') {
-        calculator.displayValue = parseFloat(calculator.previous) - parseFloat(calculator.current);
-        updateDisplay();
-    } else if(calculator.operator === '/') {
-        calculator.displayValue = parseFloat(calculator.previous) / parseFloat(calculator.current);
-        updateDisplay();
-    } else if(calculator.operator === '*') {
-        calculator.displayValue = parseFloat(calculator.previous) * parseFloat(calculator.current);
-        updateDisplay();
-    }
-    calculator.current = calculator.displayValue;
-
-    console.log(calculator);
-}
-
 function dotFunc() {
     if (calculator.current.includes('.')) {
         return false
@@ -66,3 +38,26 @@ function dotFunc() {
     }
     updateDisplay();
 }
+function negativeFunc() {
+       calculator.current = calculator.current.charAt(0) ==='-' ?
+       calculator.current.slice(1) : `-${calculator.current}`;
+       updateDisplay();
+}
+function previousValue () {
+    return parseFloat(calculator.previous);
+}
+function currentValue() {
+    return parseFloat(calculator.current);
+}
+function equalFunc() {
+    calculator.displayValue = operators[calculator.operator](calculator.previous, calculator.current);
+    updateDisplay();
+    calculator.current = calculator.displayValue;
+}
+let operators = {
+    '+': function (a,b) { return previousValue(a) + currentValue(b); },
+    '-': function (a,b) { return previousValue(a) - currentValue(b); },
+    '/': function (a,b) { return previousValue(a) / currentValue(b); },
+    '*': function (a,b) { return previousValue(a) * currentValue(b); },
+    '%': function (a,b) { return (previousValue(a) / currentValue(b)) * 100; }
+};
