@@ -21,7 +21,6 @@ function operatorFunc(op) {
             calculator.operator = e.target.value;
             calculator.previous = calculator.current;
             setPrevious();
-            console.log(calculator.operator);
         }
     });
 }
